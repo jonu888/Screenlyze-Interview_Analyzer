@@ -1,0 +1,240 @@
+import React, { useState } from 'react';
+import FileUpload from '../components/FileUpload';
+import EmotionChart from '../components/EmotionChart';
+import SentimentChart from '../components/SentimentChart';
+import { 
+  Card, 
+  CardContent, 
+  CardHeader, 
+  CardTitle 
+} from '../components/ui/card';
+import { 
+  Tabs, 
+  TabsContent, 
+  TabsList, 
+  TabsTrigger 
+} from '../components/ui/tabs';
+import { 
+  BarChart, 
+  LineChart, 
+  PieChart 
+} from '../components/ui/charts';
+import { 
+  AlertCircle, 
+  TrendingUp, 
+  Clock, 
+  MessageSquare, 
+  ThumbsUp,
+  Award
+} from 'lucide-react';
+
+export default function AnalysisDashboard() {
+  const [result, setResult] = useState(null);
+
+  const renderInterviewScore = (score) => {
+    const getScoreColor = (score) => {
+      if (score >= 0.8) return 'text-green-600';
+      if (score >= 0.6) return 'text-yellow-600';
+      return 'text-red-600';
+    };
+
+    const getScoreLabel = (score) => {
+      if (score >= 0.8) return 'Excellent';
+      if (score >= 0.6) return 'Good';
+      if (score >= 0.4) return 'Average';
+      return 'Needs Improvement';
+    };
+
+    return (
+      <Card className="bg-gradient-to-br from-blue-50 to-indigo-50">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Award className="h-6 w-6 text-blue-600" />
+            Overall Interview Score
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center">
+            <div className="inline-flex items-center justify-center w-32 h-32 rounded-full bg-white shadow-lg mb-4">
+              <span className={`text-4xl font-bold ${getScoreColor(score)}`}>
+                {(score * 100).toFixed(1)}%
+              </span>
+            </div>
+            <p className={`text-xl font-semibold ${getScoreColor(score)}`}>
+              {getScoreLabel(score)}
+            </p>
+            <p className="text-sm text-gray-600 mt-2">
+              Based on sentiment, emotions, and speaking patterns
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  };
+
+  const renderFeedbackCard = (feedback) => {
+    const feedbackPoints = feedback.split('. ').filter(point => point.trim());
+    return (
+      <Card className="bg-gradient-to-br from-blue-50 to-indigo-50">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <MessageSquare className="h-5 w-5 text-blue-600" />
+            Detailed Feedback
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ul className="space-y-3">
+            {feedbackPoints.map((point, index) => (
+              <li key={index} className="flex items-start gap-2">
+                <ThumbsUp className="h-5 w-5 text-green-500 mt-1" />
+                <span className="text-gray-700">{point}</span>
+              </li>
+            ))}
+          </ul>
+        </CardContent>
+      </Card>
+    );
+  };
+
+  const renderPauseAnalytics = (pauseData) => (
+    <Card className="bg-gradient-to-br from-purple-50 to-pink-50">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Clock className="h-5 w-5 text-purple-600" />
+          Speaking Pattern Analysis
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-2 gap-4">
+          <div className="p-4 bg-white rounded-lg shadow-sm">
+            <h4 className="text-sm font-medium text-gray-500">Total Pauses</h4>
+            <p className="text-2xl font-bold text-purple-600">{pauseData.total_pauses}</p>
+          </div>
+          <div className="p-4 bg-white rounded-lg shadow-sm">
+            <h4 className="text-sm font-medium text-gray-500">Average Pause Duration</h4>
+            <p className="text-2xl font-bold text-purple-600">{pauseData.avg_pause}s</p>
+          </div>
+        </div>
+        {pauseData.pauses && pauseData.pauses.length > 0 && (
+          <div className="mt-4">
+            <h4 className="text-sm font-medium text-gray-500 mb-2">Pause Distribution</h4>
+            <LineChart
+              data={pauseData.pauses.map((pause, index) => ({
+                time: index + 1,
+                duration: pause
+              }))}
+              xField="time"
+              yField="duration"
+              color="#8B5CF6"
+            />
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+
+  return (
+    <div className="min-h-screen bg-gray-50 p-8">
+      <div className="max-w-7xl mx-auto">
+        {!result ? (
+          <Card>
+            <CardContent>
+              <FileUpload onSuccess={setResult} />
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="space-y-6">
+            <Tabs defaultValue="overview" className="w-full">
+              <TabsList className="grid w-full grid-cols-3">
+                <TabsTrigger value="overview">Overview</TabsTrigger>
+                <TabsTrigger value="emotions">Emotional Analysis</TabsTrigger>
+                <TabsTrigger value="feedback">Detailed Feedback</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="overview" className="space-y-6">
+                {renderInterviewScore(result.interview_score)}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <Card className="bg-gradient-to-br from-green-50 to-emerald-50">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <TrendingUp className="h-5 w-5 text-green-600" />
+                        Overall Sentiment
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <SentimentChart score={result.sentiment_score} />
+                      <div className="mt-4 text-center">
+                        <p className="text-2xl font-bold text-green-600">
+                          {result.sentiment_score > 0.6 ? 'Positive' : 
+                           result.sentiment_score > 0.4 ? 'Neutral' : 'Negative'}
+                        </p>
+                        <p className="text-sm text-gray-500">Sentiment Score: {result.sentiment_score}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="bg-gradient-to-br from-orange-50 to-red-50">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <AlertCircle className="h-5 w-5 text-orange-600" />
+                        Key Emotions
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <EmotionChart data={result.emotion_scores} />
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {result.pause_analytics && renderPauseAnalytics(result.pause_analytics)}
+              </TabsContent>
+
+              <TabsContent value="emotions" className="space-y-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Emotional Journey</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-[400px]">
+                      <LineChart
+                        data={Object.entries(result.emotion_scores).map(([emotion, score]) => ({
+                          emotion,
+                          score
+                        }))}
+                        xField="emotion"
+                        yField="score"
+                        color="#F97316"
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Emotion Distribution</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-[400px]">
+                      <PieChart
+                        data={Object.entries(result.emotion_scores).map(([emotion, score]) => ({
+                          name: emotion,
+                          value: score
+                        }))}
+                        colorField="name"
+                        angleField="value"
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="feedback">
+                {renderFeedbackCard(result.feedback)}
+              </TabsContent>
+            </Tabs>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
