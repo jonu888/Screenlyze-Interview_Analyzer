@@ -83,17 +83,51 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## 📸 Media
 
 ### Screenshots
-![Dashboard View](docs/media/screenshots/dashboard.png)
-*Dashboard showing interview analysis and performance metrics*
 
-![Analysis View](docs/media/screenshots/analysis.png)
+#### Home
+
+![Screenshot 2025-05-23 190846](https://github.com/user-attachments/assets/2425fd5d-78bb-4780-8dd2-12479d1f2ffa)
+
+https://github.com/user-attachments/assets/81ff16b3-82ed-4189-a1a9-64cef609b65b
+
+
+
+
+
+
 *Detailed analysis view with AI-powered feedback*
 
-![Upload Interface](docs/media/screenshots/upload.png)
-*Video upload interface with real-time progress*
 
-### Demo Video
-[![Screenlyze Demo](docs/media/demo/thumbnail.png)](docs/media/demo/demo.mp4)
-*Click to watch the demo video*
+https://github.com/user-attachments/assets/8e8c22b2-b01b-495c-912e-5d509290ce36
+
+
+![Screenshot 2025-05-23 191219](https://github.com/user-attachments/assets/74c527cf-5787-4f04-bbc9-f236eaf26bcb)
+
+*Video upload interface with real-time progress*
+![Screenshot 2025-05-23 190906](https://github.com/user-attachments/assets/1e11d8fe-a775-4be7-876c-facf9fa38e0d)
+
+![Screenshot 2025-05-23 191003](https://github.com/user-attachments/assets/197d40a1-dfb4-4f06-a50e-2a7e08b9ba4a)
+
+
+
+*Prepare for an interview for using Qustions*
+
+
+
+
+
+
+https://github.com/user-attachments/assets/81bdc953-9e1d-46f0-beba-5cd7314f32d3
+
+
+*Profile*
+
+
+
+https://github.com/user-attachments/assets/d8b80162-aada-42c4-ac5a-68171a0ccf46
+
+
+
+
 
 
